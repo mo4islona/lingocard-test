@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import Advertiser from './advertisers/advertiser';
 import { AdvertisersModule } from './advertisers/advertisers.module';
+import { Advertiser } from "./advertisers/advertiser.entity";
 
 @Module({
   imports: [
@@ -12,7 +12,7 @@ import { AdvertisersModule } from './advertisers/advertisers.module';
       username: process.env.MYSQL_USER || 'mysql',
       password: process.env.MYSQL_PASSWORD || 'mysql',
       database: process.env.MYSQL_DATABASE || 'db',
-      entities: [Advertiser],
+      entities: [ Advertiser ],
       synchronize: true,
     }),
     AdvertisersModule,
