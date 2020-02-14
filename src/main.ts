@@ -12,7 +12,6 @@ async function bootstrap() {
     .setTitle('Advertisers example')
     .setDescription('The advertisers API description')
     .setVersion('1.0')
-    .addTag('advertisers')
     .build();
   const document = SwaggerModule.createDocument(app, options);
   SwaggerModule.setup('/', app, document);

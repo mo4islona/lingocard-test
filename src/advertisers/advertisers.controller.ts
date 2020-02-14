@@ -14,8 +14,10 @@ import { AdvertiserDto } from './advertiser.dto';
 import { castNumber } from './request';
 import { Advertiser } from './advertiser.entity';
 import { WinthdrawalDto } from './withdrawal.dto';
+import { ApiTags } from '@nestjs/swagger';
 
 @Controller('advertisers')
+@ApiTags('advertisers')
 export class AdvertisersController {
   constructor(
     @Inject(AdvertisersService)
