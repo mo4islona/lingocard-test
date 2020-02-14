@@ -15,6 +15,6 @@ services:
   api:
     image: localhost/lingua-card-api
     ports:
-      - '8000:8000'
+      - '8080:8080'
     environment:
       MYSQL_HOST: db

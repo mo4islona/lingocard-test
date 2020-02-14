@@ -10,8 +10,10 @@ yarn start
 
 ## Build image
 ```make build```
+or
+```docker build -t "localhost/lingua-card-api:latest" .```
 
-## Run in Docker 
+## Run all in docker 
 ```docker-compose up -d```
 
 
