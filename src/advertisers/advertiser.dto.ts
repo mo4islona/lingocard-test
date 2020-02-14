@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsString, ValidateIf } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class AdvertiserDto {
@@ -8,6 +8,8 @@ export class AdvertiserDto {
   name: string;
 
   @ApiProperty()
+  @ValidateIf(e => !!e.contactName)
+  @IsString()
   contactName: string;
 
   @ApiProperty()
