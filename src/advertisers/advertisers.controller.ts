@@ -18,9 +18,9 @@ import { WinthdrawalDto } from './withdrawal.dto';
 @Controller('advertisers')
 export class AdvertisersController {
   constructor(
-    @Inject(AdvertisersService) private readonly advertiserService: AdvertisersService,
-  ) {
-  }
+    @Inject(AdvertisersService)
+    private readonly advertiserService: AdvertisersService,
+  ) {}
 
   @Get()
   async list(): Promise<Advertiser[]> {
@@ -33,7 +33,10 @@ export class AdvertisersController {
   }
 
   @Get(':id/limit/:amount')
-  async limit(@Param('id') id: string, @Param('amount') amount: string): Promise<{status: string}>  {
+  async limit(
+    @Param('id') id: string,
+    @Param('amount') amount: string,
+  ): Promise<{ status: string }> {
     const limit = castNumber(amount, BadRequestException);
     if (limit <= 0) throw new BadRequestException();
 
@@ -42,7 +45,10 @@ export class AdvertisersController {
   }
 
   @Post(':id/withdrawal')
-  async withdrawal(@Param('id') id: string, @Body() req: WinthdrawalDto): Promise<Advertiser>  {
+  async withdrawal(
+    @Param('id') id: string,
+    @Body() req: WinthdrawalDto,
+  ): Promise<Advertiser> {
     return await this.advertiserService.withdrawal(id, req);
   }
 
@@ -52,7 +58,10 @@ export class AdvertisersController {
   }
 
   @Put(':id')
-  update(@Param('id') id: string, @Body() req: AdvertiserDto): Promise<Advertiser> {
+  update(
+    @Param('id') id: string,
+    @Body() req: AdvertiserDto,
+  ): Promise<Advertiser> {
     return this.advertiserService.update(id, req);
   }
 

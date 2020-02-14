@@ -1,6 +1,6 @@
-import { HttpException, Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, UpdateResult, DeleteResult } from 'typeorm';
+import { Repository } from 'typeorm';
 import { Advertiser } from './advertiser.entity';
 import { AdvertiserDto } from './advertiser.dto';
 import { castNumber } from './request';
@@ -11,8 +11,7 @@ export class AdvertisersService {
   constructor(
     @InjectRepository(Advertiser)
     private readonly advertisersRepository: Repository<Advertiser>,
-  ) {
-  }
+  ) {}
 
   findAll(): Promise<Advertiser[]> {
     return this.advertisersRepository.find();
