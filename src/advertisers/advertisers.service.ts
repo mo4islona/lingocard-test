@@ -1,8 +1,10 @@
-import { Injectable, NotFoundException, } from "@nestjs/common";
-import { InjectRepository, } from "@nestjs/typeorm";
-import { Repository, UpdateResult } from "typeorm";
-import { Advertiser } from "./advertiser.entity";
-import { AdvertiserDto } from "./advertiser.dto";
+import { HttpException, Injectable, NotFoundException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository, UpdateResult, DeleteResult } from 'typeorm';
+import { Advertiser } from './advertiser.entity';
+import { AdvertiserDto } from './advertiser.dto';
+import { castNumber } from './request';
+import { WinthdrawalDto } from './withdrawal.dto';
 
 @Injectable()
 export class AdvertisersService {
@@ -16,39 +18,38 @@ export class AdvertisersService {
     return this.advertisersRepository.find();
   }
 
-  findOne(id: string): Promise<Advertiser> {
-    const ad = this.advertisersRepository.findOne(this.checkId(id));
+  async findOneElseThrow(id: string): Promise<Advertiser> {
+    const adv = await this.advertisersRepository.findOne(castNumber(id));
+    if (!adv) throw new NotFoundException();
 
-    if (!ad) throw new NotFoundException();
-
-    return ad;
+    return adv;
   }
 
   addOne(req: AdvertiserDto): Promise<Advertiser> {
-    const ad = new Advertiser();
-    ad.name = req.name;
-    ad.contactName = req.contactName;
-    ad.creditLimit = req.creditLimit;
-    return this.advertisersRepository.save(ad);
+    const adv = new Advertiser();
+    adv.name = req.name;
+    adv.contactName = req.contactName;
+    adv.creditLimit = req.creditLimit;
+    return this.advertisersRepository.save(adv);
   }
 
-  update(id: string, req: AdvertiserDto): Promise<UpdateResult> {
-    const ad = new Advertiser();
-    ad.name = req.name;
-    ad.contactName = req.contactName;
-    ad.creditLimit = req.creditLimit;
-    return this.advertisersRepository.update(id, ad);
+  async update(id: string, req: AdvertiserDto): Promise<Advertiser> {
+    const adv = await this.findOneElseThrow(id);
+    adv.name = req.name;
+    adv.contactName = req.contactName;
+    adv.creditLimit = req.creditLimit;
+    return await this.advertisersRepository.save(adv);
   }
 
-  async remove(id: string): Promise<void> {
-    await this.advertisersRepository.delete(this.checkId(id));
+  async withdrawal(id: string, req: WinthdrawalDto): Promise<Advertiser> {
+    const adv = await this.findOneElseThrow(id);
+    adv.creditLimit -= req.amount;
+    return await this.advertisersRepository.save(adv);
   }
 
-  checkId(id: string) {
-    const nid = parseInt(id, 10);
-    if (isNaN(nid)) {
-      throw new NotFoundException();
-    }
-    return nid;
+  async remove(id: string): Promise<Advertiser> {
+    const adv = await this.findOneElseThrow(id);
+    await this.advertisersRepository.delete(adv);
+    return adv;
   }
 }

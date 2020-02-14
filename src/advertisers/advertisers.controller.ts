@@ -1,42 +1,63 @@
-import { Body, Controller, Delete, Get, Inject, Param, Post, Put, NotFoundException } from "@nestjs/common";
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Inject,
+  Param,
+  Post,
+  Put,
+  BadRequestException,
+} from '@nestjs/common';
 import { AdvertisersService } from './advertisers.service';
-import { AdvertiserDto } from "./advertiser.dto";
-import { Advertiser } from "./advertiser.entity";
+import { AdvertiserDto } from './advertiser.dto';
+import { castNumber } from './request';
+import { Advertiser } from './advertiser.entity';
+import { WinthdrawalDto } from './withdrawal.dto';
 
 @Controller('advertisers')
 export class AdvertisersController {
   constructor(
     @Inject(AdvertisersService) private readonly advertiserService: AdvertisersService,
-  ) {}
+  ) {
+  }
 
   @Get()
-  async list() {
+  async list(): Promise<Advertiser[]> {
     return await this.advertiserService.findAll();
   }
 
-  @Get(':id')
-  async one(@Param('id') id: string) {
-    const ad =  await this.advertiserService.findOne(id);
-
-    if(!ad) throw new NotFoundException();
-
-    return ad;
-  }
-
   @Post()
-  async add( @Body() req: AdvertiserDto) {
+  async add(@Body() req: AdvertiserDto): Promise<Advertiser> {
     return await this.advertiserService.addOne(req);
   }
 
-  @Put(':id')
-  async update(@Param('id') id: string, @Body() req: AdvertiserDto) {
-    return await this.advertiserService.update(id, req);
+  @Get(':id/limit/:amount')
+  async limit(@Param('id') id: string, @Param('amount') amount: string): Promise<{status: string}>  {
+    const limit = castNumber(amount, BadRequestException);
+    if (limit <= 0) throw new BadRequestException();
+
+    const adv = await this.advertiserService.findOneElseThrow(id);
+    return { status: adv.creditLimit >= limit ? 'OK' : 'FALSE' };
   }
 
+  @Post(':id/withdrawal')
+  async withdrawal(@Param('id') id: string, @Body() req: WinthdrawalDto): Promise<Advertiser>  {
+    return await this.advertiserService.withdrawal(id, req);
+  }
 
-  //
-  // @Delete(':id')
-  // async delete(@Param('id') id: string) {
-  //   return this.advertiserService.findAll();
-  // }
+  @Get(':id')
+  async one(@Param('id') id: string): Promise<Advertiser> {
+    return await this.advertiserService.findOneElseThrow(id);
+  }
+
+  @Put(':id')
+  update(@Param('id') id: string, @Body() req: AdvertiserDto): Promise<Advertiser> {
+    return this.advertiserService.update(id, req);
+  }
+
+  @Delete(':id')
+  async delete(@Param('id') id: string): Promise<Advertiser> {
+    return await this.advertiserService.remove(id);
+  }
 }
