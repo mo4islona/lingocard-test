@@ -1,17 +1,17 @@
-##Install
+## Install
 
 ```yarn install```
 
-##Develop
+## Develop
 ```
 docker-compose up db -d
 yarn start
 ```
 
-##Build image
+## Build image
 ```make build```
 
-##Run in Docker 
+## Run in Docker 
 ```docker-compose up -d```
 
 
