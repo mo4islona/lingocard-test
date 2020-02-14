@@ -8,7 +8,6 @@ export class AdvertiserDto {
   name: string;
 
   @ApiProperty()
-  @ValidateIf(e => !!e.contactName)
   @IsString()
   contactName: string;
 

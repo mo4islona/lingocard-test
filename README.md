@@ -1,12 +1,20 @@
 ##Install
 
-###Modules
 ```yarn install```
 
-###Start docker
-```docker-compose up```
+##Develop
+```
+docker-compose up db -d
+yarn start
+```
 
-##Work
+##Build image
+```make build```
 
-###Start dev version 
-```yarn start```
+##Run in Docker 
+```docker-compose up -d```
+
+
+
+
+

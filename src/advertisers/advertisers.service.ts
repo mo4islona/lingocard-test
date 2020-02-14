@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, PayloadTooLargeException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Advertiser } from './advertiser.entity';
@@ -43,6 +43,8 @@ export class AdvertisersService {
   async withdrawal(id: string, req: WinthdrawalDto): Promise<Advertiser> {
     const adv = await this.findOneElseThrow(id);
     adv.creditLimit -= req.amount;
+
+    if(adv.creditLimit < 0) throw new PayloadTooLargeException();
     return await this.advertisersRepository.save(adv);
   }
 
